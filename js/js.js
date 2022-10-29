@@ -21,12 +21,13 @@ const displayList = (list) => {
     localStorage.setItem("itemId", JSON.stringify(itemId));
     location.href = "/html/singlmeal.html";
   });
-  infoCard.classList.add("position-relative", "rounded-4");
+  infoCard.classList.add("position-relative", "rounded-4", "infoCard");
   let cardImg = document.createElement("div");
   let heroImag = document.createElement("img");
   heroImag.setAttribute("src", `${list.strMealThumb}`);
   heroImag.classList.add("w-100", "rounded-4");
   let hoverCard = document.createElement("div");
+  hoverCard.classList.add("hoverCard");
   hoverCard.classList.add(
     "align-items-center",
     "d-flex",
@@ -182,13 +183,16 @@ if (location.href.includes("categories")) {
           );
         let newList = new Set(categoriesArray);
         let finlArray = Array(...newList);
-        console.log(finlArray);
         finlArray.map((x) => {
           let cardConu = document.createElement("div");
           cardConu.classList.add("col-lg-4", "gy-3", "rounded-4");
+          let textcard = document.createElement("div");
+          textcard.classList.add("text-card", "m-5");
+
           let text = document.createElement("p");
           text.innerText = x;
-          cardConu.appendChild(text);
+          textcard.appendChild(text);
+          cardConu.appendChild(textcard);
           $("#prodectRow").append(cardConu);
 
           cardConu.addEventListener("click", function () {
@@ -233,9 +237,13 @@ if (location.href.includes("area")) {
         finlArray.map((x) => {
           let cardConu = document.createElement("div");
           cardConu.classList.add("col-lg-4", "gy-3", "rounded-4");
+          let textcard = document.createElement("div");
+          textcard.classList.add("text-card", "m-5");
+
           let text = document.createElement("p");
           text.innerText = x;
-          cardConu.appendChild(text);
+          textcard.appendChild(text);
+          cardConu.appendChild(textcard);
           $("#prodectRow").append(cardConu);
 
           cardConu.addEventListener("click", function () {
@@ -262,7 +270,10 @@ if (location.href.includes("area")) {
   });
 }
 if (location.href.includes("ingredients")) {
+
   $(window).ready(function () {
+          let input = "";
+
     const ingredients = async () => {
       await fetch(all)
         .then((res) => res.json())
@@ -273,7 +284,7 @@ if (location.href.includes("ingredients")) {
         });
     };
     const ingredientsiNFO = (x) => {
-      list =[]
+      list = [];
       let recipes = [
         { name: x.strIngredient1, wight: x.strMeasure1 },
         { name: x.strIngredient2, wight: x.strMeasure2 },
@@ -297,50 +308,152 @@ if (location.href.includes("ingredients")) {
         { name: x.strIngredient20, wight: x.strMeasure20 },
       ];
 
-      let filterList = recipes.filter(x=> x.name !=='' && x.name != null)
-      filterList.map(x=>{
-        list.push(x.name)
-      })
-      console.log(list);
+      let filterList = recipes.filter((x) => x.name !== "" && x.name != null);
+      filterList;
+      console.log(filterList);
 
-      // final.map(x=>{
-
-
-
-        // let cardConu = document.createElement("div");
-        // cardConu.classList.add("col-lg-4", "gy-3", "rounded-4");
-        // let text = document.createElement("p");
-        // text.innerText = x.name;
-        // cardConu.appendChild(text);
-        // $("#prodectRow").append(cardConu);
-
-
-      // })
-
-
+      filterList.map((x) => {
+        let cardConu = document.createElement("div");
+        cardConu.classList.add("col-lg-4", "gy-3", "rounded-4");
+        let text = document.createElement("p");
+        text.innerText = x.name;
+        cardConu.appendChild(text);
+        $("#prodectRow").append(cardConu);
+        text.addEventListener("click", function () {
+          input = x.name;
+          let ingredientsList = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${input}`;
+          const findArea = async () => {
+            $("#prodectRow").html("");
+            await fetch(ingredientsList)
+              .then((res) => res.json())
+              .then((res) =>
+                res.meals.map((x) => {
+                  displayList(x);
+                })
+              );
+          };
+          findArea();
+      
+        });
+      });
     };
 
     ingredients();
   });
 }
 
+/// jquery ///////////
 
-/// jquery /////////// 
+$("#menuBtn").click(function () {
+  let offsetMenu = $("#filterMenu").offset().left;
+  let widthMenu = $("#filterMenu").innerWidth();
+  if (offsetMenu == 0) {
+    $("#box").animate({ left: `-${widthMenu}px` }, 1500);
+    $("#menuBtn i").attr("class", "bi bi-list");
+    $("#list").animate(
+      { marginLeft: "-600px", marginTop: "200px" },
+      1000,
+      function () {}
+    );
+    $("#list li").slideUp(1000);
+  } else {
+    $("#box").animate({ left: `0` }, 1000);
+    $("#menuBtn i").attr("class", "bi bi-x-lg");
+    $("#list").animate(
+      { marginLeft: "1px", marginTop: "1px" },
+      1000,
+      function () {}
+    );
+    $("#list li").slideDown(1000);
+  }
+});
 
-$("#menuBtn").click(function(){
- let offsetMenu= $("#filterMenu").offset().left;
- let widthMenu =  $("#filterMenu").innerWidth();
- if (offsetMenu === 0) {
- $("#box").animate({left:`-${widthMenu}px` },1000)
- $("#menuBtn i").attr('class' , 'bi bi-list')
- 
-} else {
-  $("#box").animate({left:`0` } , 1000)
-  $("#menuBtn i").attr('class' , 'bi bi-x-lg')
+/*          contant page vaildtion     */
+// ///////// regex:
+if (location.href.includes("contact")) {
+  $(window).ready(function () {
+    let regex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
 
+    let fName = document.getElementById("fName");
+    /// name valid///
+    fName.addEventListener("focusout", function () {
+      if (fName.value === "") {
+        $("#helpIdName").text(" *name is required");
+      } else {
+        $("#helpIdName").text("");
+      }
+      disabled();
+    });
+    /// emmail valid////
+    let email = document.getElementById("email");
+    email.addEventListener("focusout", function () {
+      if (email.value === "") {
+        $("#emailHelpId").text(" *email required");
+      } else {
+        $("#emailHelpId").text("");
+      }
+      disabled();
+      if (regex.test(email.value) == false) {
+        $("#emailHelpId").text(" *email is incorrect");
+      } else {
+        $("#emailHelpId").text("");
+      }
+      disabled();
+    });
+    /// age vaild///
+    let age = document.getElementById("age");
+    age.addEventListener("focusout", function () {
+      if (age.value === "") {
+        $("#helpIdAge").text("Age is required");
+      } else {
+        $("#helpIdAge").text("");
+      }
+      disabled();
+    });
+    //// password vaild///
+    let password = document.getElementById("password");
+    password.addEventListener("focusout", function () {
+      if (password.value.length < 6) {
+        $("#helpIdPassword").text("password mast by more 6");
+      } else {
+        $("#helpIdPassword").text("");
+      }
+      disabled();
+    });
+    //// comfirm password vaild///
+    let comfirmPassword = document.getElementById("comfirmPassword");
+    comfirmPassword.addEventListener("input", function () {
+      if (password.value !== comfirmPassword.value) {
+        $("#helpIdComfirmPassword").text("password not match");
+      } else {
+        $("#helpIdComfirmPassword").text("");
+      }
+      disabled();
+    });
+    //// phone vaild///
+    let phone = document.getElementById("phone");
+    phone.addEventListener("focusout", function () {
+      if (phone.value === "") {
+        $("#helpIdPhone").text("phone is required");
+      } else {
+        $("#helpIdPhone").text("");
+      }
+      disabled();
+    });
 
-  
- }
-  
-})
-
+    const disabled = () => {
+      if (
+        fName.value === "" ||
+        email.value === "" ||
+        age.value === "" ||
+        password.value !== comfirmPassword.value ||
+        phone.value === ""
+      ) {
+        $("#submitBtn").attr("disabled", true);
+      } else {
+        $("#submitBtn").attr("disabled", false);
+      }
+    };
+    disabled();
+  });
+}

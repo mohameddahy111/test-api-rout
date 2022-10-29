@@ -14,14 +14,14 @@
   </head>
   <body>
     <main class="d-flex">
-      <section class="d-flex align-items-center" id="">
-        <div class="filter-menu">
-          <h3 class="m-3">filter</h3>
-          <ul class="list-unstyled container" id="">
+      <section class="d-flex" id="box">
+        <div class="filter-menu bg-black" id="filterMenu">
+          <h3 class="m-3 text-capitalize text-white">filter</h3>
+          <ul class="list-unstyled container" id="list">
             <li class="my-3">
               <a
                 class="text-black text-decoration-none"
-                href="/html//search.html"
+                href="/html/search.html"
               >
                 search</a
               >
@@ -54,19 +54,22 @@
             </li>
           </ul>
         </div>
-        <div class="icon-menu border border-1">
-          <button class="btn">
+        <div class="icon-menu border bg-white border-1">
+          <button class="btn" id="">
+            <i class="bi bi-emoji-smile"></i>
+          </button>
+          <button class="btn" id="menuBtn">
             <i class="bi bi-list"></i>
+          </button>
+          <button class="btn" id="">
+            <i class="bi bi-share-fill"></i>
           </button>
         </div>
       </section>
       <section class="w-100">
         <div class="container">
-          <h2 class="text-capitalize text-center ">categories</h2>
-          <div class="row " id="prodectRow">
-            
-          </div>
-
+          <h2 class="text-capitalize text-center py-5">categories</h2>
+          <div class="row" id="prodectRow"></div>
         </div>
       </section>
     </main>
